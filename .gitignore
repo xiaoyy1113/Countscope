@@ -3,11 +3,6 @@
 __pycache__/
 *.py[cod]
 
-# Downloaded model repository and weights
-models/
-*.pth
-*.pt
-
 # Runtime-generated data
 cache/
 logs/
