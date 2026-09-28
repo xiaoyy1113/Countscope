@@ -1,0 +1,6 @@
+{
+  "port": 8775,
+  "device": "auto",
+  "default_folder": "",
+  "cpu_threads": 4
+}

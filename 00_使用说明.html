@@ -1,0 +1,60 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCOPE 区域特征检索工具｜安装与使用说明</title><style>
+body{font:16px/1.85 "Microsoft YaHei","Segoe UI",sans-serif;color:#223947;background:#edf2f5;margin:0}main{max-width:960px;margin:32px auto;padding:42px 56px;background:white;border:1px solid #d9e3e8;border-radius:12px}h1{font-size:29px;line-height:1.4;margin:0;color:#143747}h2{font-size:21px;border-bottom:1px solid #dbe5e9;padding-bottom:8px;margin-top:36px}h3{font-size:17px}a{color:#087e75}code,pre{font-family:Consolas,monospace;background:#f0f4f6;overflow-wrap:anywhere}code{padding:2px 5px;font-size:14px}pre{padding:15px;white-space:pre-wrap;font-size:14px;line-height:1.65}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:11px 13px;text-align:left;border:1px solid #dce5eb;vertical-align:top}th{background:#edf4f6}.lead{color:#647c8a;font-size:14px}.note{background:#eef7f5;border-left:4px solid #15998a;padding:15px 20px}.entry{display:inline-block;background:#087e75;color:white;padding:10px 24px;border-radius:6px;text-decoration:none;margin:6px 0}.muted{color:#6c808b;font-size:14px}li{margin:6px 0}footer{margin-top:35px;border-top:1px solid #dbe5e9;padding-top:15px;color:#718490;font-size:13px}@media(max-width:700px){main{margin:0;padding:24px 18px;border-radius:0}h1{font-size:24px}table{font-size:13px}th,td{padding:7px}}@media print{body{background:white}main{border:0;margin:0;padding:0;max-width:none}.entry{color:#087e75;background:transparent;padding:0}h2{break-after:avoid}tr{break-inside:avoid}}
+</style></head><body><main>
+<h1>SCOPE 区域特征检索工具</h1><p class="lead">本机安装版 · 版本 1.1 · 2026 年 9 月</p>
+<p>在浏览器中打开 PNG 图块，点击并框选一个区域，使用 DINOv2 整图空间特征在其他图片中检索相似区域。选框宽高可调整，结果包含文件名、相似度和局部坐标，可导出表格。</p>
+<div class="note"><strong>首次使用：解压完整文件夹 → 安装 Python → 选择 CPU 或 NVIDIA 环境安装 → 启动工具。</strong><br>模型权重已经附带，无需另行申请。第一次安装 Python 依赖需要联网；安装完成后，图片处理和检索在本机进行。</div>
+<p><a class="entry" href="http://127.0.0.1:8775/" target="_blank">打开检索界面</a><br><span class="muted">先运行“02_启动工具.cmd”，再使用此链接。127.0.0.1 指当前电脑，并非可分享给其他电脑的远程网址。</span></p>
+
+<h2>一、先确认电脑配置</h2>
+<table><tr><th>项目</th><th>配置说明</th></tr><tr><td>操作系统</td><td>安装入口针对 Windows 10/11，64 位。其他系统未提供一键安装入口。</td></tr><tr><td>Python</td><td>建议 Python 3.11，64 位；安装脚本也支持 3.12。下载时选择 Windows installer (64-bit)。</td></tr><tr><td>内存与磁盘</td><td>建议内存 16 GB 或更多，使用 SSD，并至少预留 15 GB 用于环境及初步特征缓存；原始切片、PNG 和大规模缓存另计。</td></tr><tr><td>NVIDIA 显卡</td><td>推荐用于大量图片。建议显存 8 GB 或更多；这是运行配置建议，不是所有图像尺寸下的硬性最低值。显存需求随图片尺寸和提取尺度增加。</td></tr><tr><td>没有 NVIDIA 显卡</td><td>可以使用 CPU。集成显卡或 AMD 显卡在本安装方案中也选择 CPU。先用 20～50 张图片、原始尺寸测试，再扩大规模。</td></tr><tr><td>网络</td><td>首次安装需能访问 Python 包源和 download.pytorch.org。权重已包含；本包不包含完整 Python 安装程序或依赖离线安装包。</td></tr></table>
+<p>查看显卡：按 <strong>Ctrl + Shift + Esc</strong> 打开任务管理器，在“性能 → GPU”查看型号和专用 GPU 内存。无法确认显卡时先选 CPU 安装。</p>
+
+<h2>二、第一次安装</h2>
+<ol><li>把压缩包完整解压到可写目录，例如 <code>D:\SCOPE</code>。不要在压缩包预览窗口中直接运行，不要只复制启动入口。</li>
+<li>从 <a href="https://www.python.org/downloads/windows/">Python 官方下载页</a>安装 Python 3.11 或 3.12（64 位）。勾选 <strong>Add python.exe to PATH</strong>，保留 pip 和 Python Launcher。安装后重新打开文件夹。</li>
+<li>在两个入口中选择一个：<br><strong>01_安装环境_CPU.cmd</strong>：没有 NVIDIA 显卡，或希望先验证流程。<br><strong>01_安装环境_NVIDIA.cmd</strong>：使用 NVIDIA 显卡加速。</li>
+<li>等待安装窗口显示“环境安装完成”。安装程序会建立本文件夹内的 <code>.venv</code> 独立环境，不依赖他人电脑的 Anaconda 路径。</li>
+<li>双击 <strong>04_环境检查.cmd</strong>。检查会校验权重，并执行一次小尺寸整图推理。出现“整图推理检查通过”后即可开始使用。</li></ol>
+<p>NVIDIA 安装入口采用 PyTorch 2.10.0 / torchvision 0.25.0 的 CUDA 12.8 预编译版本，需要兼容的 NVIDIA 驱动。一般不需要单独安装 CUDA Toolkit；先更新显卡驱动，再运行检查。较老显卡或驱动不兼容时可改用 CPU。参见 <a href="https://pytorch.org/get-started/locally/">PyTorch 官方安装说明</a>及<a href="https://pytorch.org/get-started/previous-versions/">固定版本安装命令</a>。</p>
+<p>初次安装会下载较大的依赖文件，耗时取决于网速。将已安装的整个目录移动到另一台电脑后，建议重新解压交付包并安装环境；<code>.venv</code> 不作为可跨电脑复制的运行时。</p>
+
+<h2>三、启动、打开链接与停止</h2>
+<ol><li>双击 <strong>02_启动工具.cmd</strong>。后台服务启动后会自动打开浏览器。</li><li>若浏览器未弹出，双击 <strong>打开浏览器.url</strong>，或打开 <code>http://127.0.0.1:8775/</code>。</li><li>关闭网页并不会停止后台程序。用完后运行 <strong>03_停止工具.cmd</strong>释放模型占用的内存/显存。先在页面上取消正在运行的任务。</li></ol>
+<p>希望强制使用 CPU 时，先停止工具，再运行 <strong>02_启动工具_CPU模式.cmd</strong>。浏览器标题栏中的设备信息反映实际使用的设备。</p>
+
+<h2>四、已有 PNG 时如何检索</h2>
+<ol><li>在“PNG 文件夹”中输入本机完整路径，例如 <code>D:\Pathology\case01\png</code>，点击“打开文件夹”。只读取该目录当前层的 PNG；不同切片建议分别存放。</li>
+<li>选择图片。显示倍率只影响浏览，不改变模型输入。</li>
+<li>设置选框宽和高，例如 10×10、20×20 或 32×32 像素。点击目标中心，选框会限制在原图内部；方向键可微调位置。</li>
+<li>选择提取尺度：原始尺寸较快；“整图放大 2 倍”使用更密的特征采样，耗时和缓存量增加。模型读取整张图片，不把小选框单独送入模型。</li>
+<li>点击“检索相似区域”。第一次会生成特征缓存；也可以先运行“预先提取全部图片特征”。更换选点会复用同尺度缓存。</li>
+<li>查看结果，点击候选图可回到原图定位。调整最低相似度，再点击“导出文件名与坐标”。导出包含全部达到阈值的结果，不限于页面当前显示数量。</li></ol>
+<div class="note"><strong>当前返回方式：每张图片一个最佳候选区域。</strong>相似度不是阳性概率，排序靠前也不等于真实红点。用于人工筛选、复核和建立样本，不代表已自动找全或计数所有阳性点。同一张图片存在多个阳性点时，当前版本不会逐个输出。</div>
+<p>原始尺寸下，一个 DINOv2 特征单元约对应 14×14 原图像素；整图放大两倍时约对应 7×7。可定义 10×10 选框，但特征不具备逐像素的独立分辨能力，可能同时匹配周围组织或细胞。建议用已确认的阳性、阴性和干扰区域比较效果。</p>
+
+<h2>五、原始 SVS/TIF 如何准备</h2>
+<p>网页直接处理 PNG，不直接打开整张 WSI。附带的 <strong>05_批量切片转PNG.cmd</strong> 可以把一个目录内的 SVS/TIF/TIFF 逐张转成图块：</p>
+<ol><li>把待处理切片放到同一输入目录，运行批量切块入口。</li><li>输入源目录、独立的输出目录、图块边长（256 或 512）。</li><li>输入最低前景比例。默认 1/3；设为 0 会保留全部图块。前景根据颜色和亮度估计，浅染或组织稀疏的区域可能被过滤；首次处理新批次应检查输出预览。</li><li>等待完成。每张切片生成单独的目录，网页中打开其中的 <code>png</code> 子目录。</li></ol>
+<p>切块采用 level 0 原始分辨率，无颜色归一化、无重叠；边缘不足一块时补白。文件名中的 x/y 是图块左上角全切片坐标。<code>tiles.jsonl</code>记录保留图块，<code>layout.jsonl</code>记录完整网格和省略位置，<code>overview.jpg</code>是缩略预览。拼接时按坐标放回图块，省略区域填白。</p>
+<p>脚本不会删除或修改源切片，遇到已有同名输出不会覆盖。不是所有 TIFF 都是 OpenSlide 支持的全切片格式；失败详情保存在 <code>export_errors.json</code>。中途停止会保留已输出的部分图块，没有 <code>metadata.json</code> 或没有 <code>completed: true</code> 的目录不能视为完整结果。重试时选择新的输出目录。</p>
+
+<h2>六、缓存、模型与配置</h2>
+<table><tr><th>位置</th><th>用途</th></tr><tr><td><code>models/</code></td><td>模型结构代码及 DINOv2 ViT-S/14 权重，约 84 MiB 权重。请保持目录结构不变。</td></tr><tr><td><code>模型信息.json</code></td><td>权重来源、文件大小和 SHA256 校验值。</td></tr><tr><td><code>cache/</code></td><td>首次运行后产生的空间特征缓存。512×512 原始尺寸约每张 1 MiB，1,900 张约 2 GB；两倍尺度约四倍。停止程序后可删除缓存，之后会重算。</td></tr><tr><td><code>logs/</code></td><td>启动日志及进程记录；排查错误时查看 <code>server.err.log</code>。</td></tr><tr><td><code>config.json</code></td><td>端口、设备、默认 PNG 目录和 CPU 线程数。</td></tr></table>
+<pre>{
+  "port": 8775,
+  "device": "auto",
+  "default_folder": "",
+  "cpu_threads": 4
+}</pre>
+<p><code>device</code> 可用 <code>auto</code>、<code>cpu</code> 或 <code>cuda</code>；GPU 自检失败时程序回到 CPU。<code>default_folder</code> 留空即可，也可填写 <code>D:/Pathology/case01/png</code>。修改后需重启。修改端口后，以启动入口自动打开的地址为准，并相应修改“打开浏览器.url”。</p>
+
+<h2>七、常见问题</h2>
+<table><tr><th>现象</th><th>处理办法</th></tr><tr><td>链接打不开</td><td>先运行“02_启动工具.cmd”。本地链接不能启动 Python 服务，也不是他人电脑上的共享服务。</td></tr><tr><td>找不到 Python</td><td>安装 64 位 Python 3.11/3.12，勾选 PATH，关闭原安装窗口后重新运行入口。</td></tr><tr><td>安装下载失败</td><td>检查网络、代理及单位网络限制，再次运行相同安装入口。离线电脑需由技术人员另行准备匹配操作系统和 Python 版本的依赖包。</td></tr><tr><td>有 NVIDIA 显卡，但显示 CPU</td><td>确认执行过 NVIDIA 安装入口；运行环境检查，查看 CUDA 和驱动信息。GPU 不可用时仍可使用 CPU。</td></tr><tr><td>CUDA out of memory</td><td>取消任务、停止工具，关闭其他占用显卡的程序。先用原始尺度、256 图块，或启动 CPU 模式。CPU 模式不依赖显存。</td></tr><tr><td>xFormers is not available</td><td>本工具没有要求安装 xFormers；若随后显示推理检查通过，这项提示可以忽略。</td></tr><tr><td>筛选结果不像红点</td><td>检查查询区域是否含明显背景、蓝色细胞或色素。尝试不同选框尺寸、两倍提取尺度，并用明确的正负样本验证，不能把相似度直接当作阳性结论。</td></tr><tr><td>结果有多少张？</td><td>默认排除查询图片，每张候选图片输出一个区域。降低阈值可看完整排序；不会输出每个图中的所有红点。</td></tr><tr><td>卡住或部分图片失败</td><td>页面可取消任务，已生成缓存保留。检查错误信息和日志；建议先用少量同尺寸 PNG 验证。</td></tr></table>
+
+<h2>八、交付与运行范围</h2>
+<p>交付包不包含患者切片、示例患者 PNG、原电脑路径或历史检索结果。正常使用过程中，图片和特征保留在运行电脑，不向外部服务上传。当前服务只监听本机，不配置远程访问。</p>
+<p>随包权重已进行 SHA256 校验；在 Windows、Python 3.11、PyTorch 2.10 环境下验证了 GPU 与强制 CPU 推理。未知目标电脑的驱动、权限和网络仍需通过“环境检查”确认。配置建议不构成对所有硬件运行速度的保证。</p>
+<p>模型来自 DINOv2 官方项目，原版权及许可证随包保留，详见“第三方说明.txt”。本工具用于研究样本检索和人工复核，尚未建立跨患者、跨批次的阳性点检测性能结论。</p>
+<h2>九、红色信号筛选</h2><p>红色信号筛选（版本 1.1）</p><p>检索步骤保持不变：打开 PNG 文件夹，点击选区，检索相似区域。在结果上方打开“启用红色信号筛选”，拖动滑块即可再次筛选，数量、预览和 CSV 导出同步变化，不重新提取 DINO 特征，也不删除原图。</p><p>建议先用默认值：偏红程度 80，最少红色占比 2%。棕色候选偏多时逐步提高偏红程度；红点很小时降低占比。关闭勾选可查看完整相似度排序。导出包括全部符合当前条件的结果，不仅是当前显示的一页，并记录颜色参数与坐标。</p><p>颜色来自每张图最佳匹配框内部的原始像素，不包括预览绿框和周边组织。偏红程度是颜色规则分数，不是模型置信度：在红通道占优、色差至少 12/255、饱和度至少 12% 的像素中，红色与偏品红色得 100 分；向橙黄色偏移时分数降低（HSV 正向色相 12° 约为 80 分，30° 约为 50 分）。满足当前分数的像素需达到设定占比，并且至少有 3 个；小于 3 像素的框无法通过。白色、灰色和蓝色不作为红色信号。</p><p>建议用不同染色批次中人工确认的红点、棕色色素和背景各做一组对照，再选阈值。浅红与红棕色可能重叠，颜色规则无法保证完全分开；极淡、紫红偏蓝或非常小的真红点可能被排除。过滤后的候选仍需人工复核。</p><p>该功能只筛选每张图片已经找到的一个最佳候选。如果最佳候选是棕色而被筛除，程序不会继续寻找同张图片里的第二个位置；因此保留数不是阳性点总数，排除图片不等于整图没有红点。</p><p>旧版本更新后请重新运行一次检索以补充颜色信息，已有特征缓存继续复用。两个滑块之后均实时生效，不需要再次检索。</p><footer>SCOPE 区域特征检索工具 · 本机部署说明 · 版本 1.1</footer>
+</main></body></html>

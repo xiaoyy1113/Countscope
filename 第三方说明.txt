@@ -1,0 +1,12 @@
+SCOPE 区域特征检索工具｜第三方组件说明
+
+模型：DINOv2 ViT-S/14（标准视觉骨干），Meta Platforms, Inc. and affiliates。
+源码与权重来源：https://github.com/facebookresearch/dinov2
+权重校验值见“模型信息.json”。标准 DINOv2 源码与权重按 Apache License 2.0 提供。
+许可证原文保留于 models/hub/facebookresearch_dinov2_main/LICENSE。
+本包将 hubconf.py 入口限制为 dinov2_vits14，其余所附模型运行代码保留原版权说明。
+未附带 Cell-DINO、XRay-DINO 等其他模型权重。
+
+PyTorch、torchvision、Flask、NumPy、Pillow、OpenSlide 等依赖由安装脚本从官方包源安装，各自适用原项目许可证。
+PyTorch 安装参考：https://pytorch.org/get-started/locally/
+固定版本参考：https://pytorch.org/get-started/previous-versions/

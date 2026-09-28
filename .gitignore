@@ -1,0 +1,35 @@
+# Local Python environment and bytecode
+.venv/
+__pycache__/
+*.py[cod]
+
+# Downloaded model repository and weights
+models/
+*.pth
+*.pt
+
+# Runtime-generated data
+cache/
+logs/
+tmp*/
+*.log
+*.pid
+
+# Local annotation database and SQLite sidecar files
+annotations.sqlite3
+annotations.sqlite3-*
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
+
+# Generated review exports
+scope_similarity_candidates.csv
+scope_point_annotations.csv
+scope_patch_gold_labels.csv
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

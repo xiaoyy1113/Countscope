@@ -1,0 +1,198 @@
+{
+  "00_使用说明.html": {
+    "bytes": 15370,
+    "sha256": "8e7834f0e5e6101d4bf6b331f66ed4ea06f7e936ff4b07f7546477b29fa570d6"
+  },
+  "01_安装环境_CPU.cmd": {
+    "bytes": 219,
+    "sha256": "274884e90b0b11bff539d7adf92cdb7a325145ab1a15ba4d51c356a22b99f81e"
+  },
+  "01_安装环境_NVIDIA.cmd": {
+    "bytes": 219,
+    "sha256": "6192a971c738ab47f403409a5ceed17dec9d942d3c37966a2dbc1390c4bfb6b0"
+  },
+  "02_启动工具.cmd": {
+    "bytes": 201,
+    "sha256": "01a364bf2c06b7a49273776b64a2e83caaef07e14c66de462f815a63de6b8d07"
+  },
+  "02_启动工具_CPU模式.cmd": {
+    "bytes": 209,
+    "sha256": "cc608b320edf4864b5e9970860eb61f11a82c76cb9a633fe895afc24187dae5c"
+  },
+  "03_停止工具.cmd": {
+    "bytes": 207,
+    "sha256": "6615e72d6790d41ca7a17a0a271854f783d24eed97b3280945e650c715540991"
+  },
+  "04_环境检查.cmd": {
+    "bytes": 208,
+    "sha256": "dac31089ea3a85aabd97d35fcd2529eaa1b41764e6c1cfcc1e981447b63622a8"
+  },
+  "05_批量切片转PNG.cmd": {
+    "bytes": 209,
+    "sha256": "5d76c5f4a814ed115f55f2345f98b0ab64ad6d449a01aa21835898923900023a"
+  },
+  "app.py": {
+    "bytes": 14355,
+    "sha256": "c1a4ac9a9f59a603ff9f570ef5d26600cc693d2f53cbc7ca04fdcea6309a900f"
+  },
+  "check_environment.py": {
+    "bytes": 1587,
+    "sha256": "058974aadd978dd11ef5f0cdcae3cbb0d9b3fb2e90ad835200f8ff81d3891bf4"
+  },
+  "color_filter.py": {
+    "bytes": 1073,
+    "sha256": "2abc7d718f0aee3aa2a3b958271fd89fe5083bda6274b2d44576f09fb63dcc06"
+  },
+  "config.json": {
+    "bytes": 87,
+    "sha256": "9dbb2df7e48e795cb0581bb63ae6d06dd729257e29b9b658fb6e548f09bbeb89"
+  },
+  "export_slides.py": {
+    "bytes": 3761,
+    "sha256": "1e56ba3635449c23efbf86990a96bc35355ac790a4d165d741bf66cbb10ac651"
+  },
+  "models/hub/checkpoints/dinov2_vits14_pretrain.pth": {
+    "bytes": 88283115,
+    "sha256": "b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/__init__.py": {
+    "bytes": 218,
+    "sha256": "0d2b87b7e71c7f7279ccc4b4f8b541d26071425284a0ea01a5a435fac4511cfe"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/hub/__init__.py": {
+    "bytes": 195,
+    "sha256": "2932e94a2d67be87b717c49468214c1127be7864aedf37f5891d26be7bc1437f"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/hub/backbones.py": {
+    "bytes": 5586,
+    "sha256": "871fca671b12a9ff02e810654baf509e97ccf461bf8196ce5ddeefff2fd87d3e"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/hub/utils.py": {
+    "bytes": 1598,
+    "sha256": "579613e3d7b82c2a387eddc215ad9f076b8740f9618229628395fe5755dbd131"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/__init__.py": {
+    "bytes": 498,
+    "sha256": "1b55deed39d5ab0b589bef421bbfe06f24a10cd590a0f8403234c9ee4e34109d"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/attention.py": {
+    "bytes": 3298,
+    "sha256": "79c7be7a452b3aad96698ec38d5d5150b9f4d8ac084fa93324510dc9f624775d"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/block.py": {
+    "bytes": 11609,
+    "sha256": "60c0ac7dfa4474be313fabfa5a23d82faf6f0cecd4e720a88be35de9788cb636"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/dino_head.py": {
+    "bytes": 2007,
+    "sha256": "9fdb1fa61c0609dc0876f711f9d0d828c33bf9fd972aab3d9c968d44e16b98d1"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/drop_path.py": {
+    "bytes": 1157,
+    "sha256": "b9f8236e86054b9d9a71275efcad2a9ecaa1f86b529d4b8d6109ddb5e806f67a"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/layer_scale.py": {
+    "bytes": 1097,
+    "sha256": "dadd5aafe178f1bf72a205a02a6645c7e635cacbad585d4a7369c200c6e89135"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/mlp.py": {
+    "bytes": 1269,
+    "sha256": "255825c73b60a916dd00eb1e38aacbcdbf316e40d6a005efb46e245b7edb43aa"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/patch_embed.py": {
+    "bytes": 2829,
+    "sha256": "40da6add3d811198ea3e17cb99cdd4e5cda59e369efbbe3d18d89308618cf142"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/layers/swiglu_ffn.py": {
+    "bytes": 3200,
+    "sha256": "e46d2948fb97e497cf991ff82ce30cb59b59fdf2e12a19568417113716b4f119"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/models/__init__.py": {
+    "bytes": 1574,
+    "sha256": "b93329ce676f3eb0c9a7790d1b3b2b114a0855ea8dc76e32e262d1a7dc6c55ae"
+  },
+  "models/hub/facebookresearch_dinov2_main/dinov2/models/vision_transformer.py": {
+    "bytes": 16438,
+    "sha256": "7799a260f2d7d0fe197331d08502fb8c542f9b7424723650f6a39b64fa2639ea"
+  },
+  "models/hub/facebookresearch_dinov2_main/hubconf.py": {
+    "bytes": 253,
+    "sha256": "7d51490b90df7e96a98cfe476dde240fde825abcac09af09c4c386d6ca71e9c5"
+  },
+  "models/hub/facebookresearch_dinov2_main/LICENSE": {
+    "bytes": 11359,
+    "sha256": "600cc67cc4cb2f5ea317dcfc687ad1c74dc4bec8782bbe9db0afd83513b935b7"
+  },
+  "requirements.txt": {
+    "bytes": 97,
+    "sha256": "0d59878920b4c0d256733885c0efa40664e5da0e54d0849eb9180abb4b1c18c6"
+  },
+  "scripts/check.ps1": {
+    "bytes": 257,
+    "sha256": "74b919cf4b7e8ac6806e3fe3db9febf24b50c9d84d57aa56a77a50f7a72cc8da"
+  },
+  "scripts/common.ps1": {
+    "bytes": 401,
+    "sha256": "8485dcc28a22842a8fd93740266aa595c99296fd579971ab661fd54885f019c1"
+  },
+  "scripts/export.ps1": {
+    "bytes": 740,
+    "sha256": "2e155d022540b72c4ee87be373bc6df99b4a0bfd73b6a91f5d2a57abf9ecf493"
+  },
+  "scripts/install.ps1": {
+    "bytes": 1950,
+    "sha256": "4e63ae18b496a5407e9d50098466366bcde29ce974542f2c3ccfaf44f680c452"
+  },
+  "scripts/start.ps1": {
+    "bytes": 2030,
+    "sha256": "6aaf6e94f2b5210cd7362df6c0d8d59877f2258ea8361eac7c647765e30e1ba5"
+  },
+  "scripts/stop.ps1": {
+    "bytes": 710,
+    "sha256": "317c12e1856d74126955c999517b62743fd2e5b9f73aaae6135368cebf0758e6"
+  },
+  "static/app.js": {
+    "bytes": 11928,
+    "sha256": "e75879c7a6d53b8d9d95ee353e6733d0d9073efb5197e0b3030300987e4919f3"
+  },
+  "static/index.html": {
+    "bytes": 5426,
+    "sha256": "780c066bd032b2f8724a349fe1d58532cbe97169bb8d43b7742ecd19e93ef964"
+  },
+  "static/style.css": {
+    "bytes": 7551,
+    "sha256": "46752dad6406811c895ee3d000a41ae9a7b7cd7ff2f597b38df0cd9ba7288070"
+  },
+  "test_color_filter.py": {
+    "bytes": 1714,
+    "sha256": "f42a88eebdb2d5c91442d6c99ba875d300b9f91cde0938123679fbbe9504c2e6"
+  },
+  "test_engine.py": {
+    "bytes": 2010,
+    "sha256": "d87194a721e03215324de24f1e1a33eae5b04f370cc484a0fe31610def6adc37"
+  },
+  "先读我.txt": {
+    "bytes": 1805,
+    "sha256": "5cb6fc945370e212e0b7fdff69a50ac19b05522f837f8fd80949b2cf6ec918cb"
+  },
+  "升级说明.txt": {
+    "bytes": 1429,
+    "sha256": "f4cc616a6a780af1766a354f2e6310e515e2102fccbfbbd4283b3ef38376ead4"
+  },
+  "打开浏览器.url": {
+    "bytes": 48,
+    "sha256": "6eed95fe9eb7ca96d551cec3b32e6a8cdc474064d1a2878b0cb5fc986f89b58f"
+  },
+  "模型信息.json": {
+    "bytes": 470,
+    "sha256": "791e74b53b57ea2de2def188b2312e6cebee89897fa0b43a43d8da7412c88697"
+  },
+  "第三方说明.txt": {
+    "bytes": 850,
+    "sha256": "5818c813b8c326fc18d00fd8acba81ff3082081b85bcf7e86974a39786f6bf69"
+  },
+  "红色筛选说明.txt": {
+    "bytes": 1861,
+    "sha256": "277dfcfca6403dd7cffe5215c833d12c1e7c79fb001695a42f45e9b7d6cfe7a1"
+  }
+}
