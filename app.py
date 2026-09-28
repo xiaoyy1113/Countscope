@@ -262,13 +262,23 @@ def separated(points, x, y, distance):
 
 
 @torch.inference_mode()
-def multiple_matches(array, image_w, image_h, rw, rh, scale, query,
-                     threshold=-1., max_candidates=20, nms_distance=14.):
+def multiple_reference_matches(array, image_w, image_h, rw, rh, scale, queries,
+                               threshold=-1., max_candidates=20, nms_distance=14.):
+    """Find local maxima against a bank of normalized reference descriptors.
+
+    The score at each location is the maximum cosine similarity to any
+    reference.  The returned reference index identifies which exemplar won.
+    """
     f=torch.as_tensor(array.astype(np.float32),device=DEVICE)
+    queries=torch.as_tensor(queries,dtype=torch.float32,device=DEVICE)
+    if queries.ndim==1:queries=queries[None,:]
+    if queries.ndim!=2 or not queries.shape[0]:raise ValueError('至少需要一个参考点')
+    queries=F.normalize(queries,dim=-1,eps=1e-8)
     stride=14/scale
     xs=axis_starts(image_w,rw,stride);ys=axis_starts(image_h,rh,stride)
     d=descriptors(f,xs,ys,rw,rh,stride)
-    score=d@query
+    reference_scores=d@queries.T
+    score,best_reference=reference_scores.max(dim=-1)
     local_max=F.max_pool2d(score[None,None],kernel_size=3,stride=1,padding=1)[0,0]
     mask=(score>=threshold)&(score>=local_max-1e-7)
     indices=mask.flatten().nonzero().flatten()
@@ -285,16 +295,25 @@ def multiple_matches(array, image_w, image_h, rw, rh, scale, query,
         iy,ix=divmod(i,len(xs))
         xx=np.arange(max(0,math.floor(xs[ix]-stride)),min(image_w-rw,math.ceil(xs[ix]+stride))+1)
         yy=np.arange(max(0,math.floor(ys[iy]-stride)),min(image_h-rh,math.ceil(ys[iy]+stride))+1)
-        values=descriptors(f,xx,yy,rw,rh,stride)@query
-        flat=int(values.argmax());y,x=divmod(flat,len(xx))
-        s=float(values[y,x].clamp(-1,1))
-        if s>=threshold:refined.append((s,int(xx[x]),int(yy[y])))
+        values=descriptors(f,xx,yy,rw,rh,stride)@queries.T
+        location_scores,location_references=values.max(dim=-1)
+        flat=int(location_scores.argmax());y,x=divmod(flat,len(xx))
+        s=float(location_scores[y,x].clamp(-1,1));reference=int(location_references[y,x])
+        if s>=threshold:refined.append((s,int(xx[x]),int(yy[y]),reference))
     kept=[]
     for candidate in sorted(refined,reverse=True):
         if separated(kept,candidate[1],candidate[2],nms_distance):
             kept.append(candidate)
         if len(kept)>=max_candidates:break
     return kept
+
+
+@torch.inference_mode()
+def multiple_matches(array, image_w, image_h, rw, rh, scale, query,
+                     threshold=-1., max_candidates=20, nms_distance=14.):
+    """Backward-compatible single-reference search."""
+    return [(score,x,y) for score,x,y,_ in multiple_reference_matches(
+        array,image_w,image_h,rw,rh,scale,query,threshold,max_candidates,nms_distance)]
 
 
 @torch.inference_mode()
@@ -312,13 +331,19 @@ def worker(config, files):
     started=time.time()
     results=[]; errors=[]
     try:
-        scale=config['scale']; source=files[config['source']]
+        scale=config['scale']
         if config['mode']=='search':
-            sf,w,h=features(source,scale)
-            x,y,rw,rh=(config[k] for k in ('x','y','width','height'))
-            if not (0<=x<=w-rw and 0<=y<=h-rh):
-                raise ValueError('选框超出原图，请重新选择。')
-            q=descriptors(torch.as_tensor(sf.astype(np.float32),device=DEVICE),[x],[y],rw,rh,14/scale)[0,0]
+            rw,rh=config['width'],config['height'];query_values=[]
+            for reference in config['references']:
+                source=files[reference['source']]
+                sf,w,h=features(source,scale);x=reference['x'];y=reference['y']
+                if not (0<=x<=w-rw and 0<=y<=h-rh):
+                    raise ValueError(f'参考点超出原图：{source.name}')
+                query_values.append(descriptors(
+                    torch.as_tensor(sf.astype(np.float32),device=DEVICE),
+                    [x],[y],rw,rh,14/scale)[0,0])
+            queries=torch.stack(query_values)
+            reference_sources={reference['source'] for reference in config['references']}
         total=len(files)
         for i,path in enumerate(files):
             if cancel.is_set():
@@ -327,19 +352,23 @@ def worker(config, files):
                 return
             update(phase=('提取整图特征' if config['mode']=='index' else '比较区域特征')+f'：{path.name}',done=i,total=total)
             try:
-                if config['mode']=='search' and i==config['source'] and config['exclude_source']:
+                if config['mode']=='search' and i in reference_sources and config['exclude_source']:
                     continue
                 a,w,h=features(path,scale)
                 if config['mode']=='search':
                     if rw>w or rh>h:
                         raise ValueError('图片小于选框，已跳过')
-                    matches=multiple_matches(
-                        a,w,h,rw,rh,scale,q,config['candidate_threshold'],
+                    matches=multiple_reference_matches(
+                        a,w,h,rw,rh,scale,queries,config['candidate_threshold'],
                         config['max_candidates'],config['nms_distance'])
                     with Image.open(path) as source_image:
                         color_image=source_image.convert('RGB')
-                    for score,bx,by in matches:
+                    for score,bx,by,reference_index in matches:
+                        reference=config['references'][reference_index]
                         row=dict(id=i,name=path.name,score=score,x=bx,y=by,width=rw,height=rh,image_width=w,image_height=h)
+                        row.update(matched_reference_index=reference.get('reference_number',reference_index+1),
+                                   matched_reference_id=reference.get('reference_id',str(reference_index+1)),
+                                   matched_reference_image=files[reference['source']].name)
                         row['candidate_key']=annotation_key(dataset['folder'],path.name,bx,by,rw,rh)
                         row['center_x']=bx+rw/2;row['center_y']=by+rh/2
                         row['color']=summarize_rgb(np.asarray(color_image.crop((bx,by,bx+rw,by+rh))))
@@ -439,9 +468,24 @@ def start():
         if data.get('generation')!=dataset['generation']:raise ValueError('文件夹已经变化，请刷新')
         files=list(dataset['files'])
         if not files:raise ValueError('请先打开文件夹')
-        config=dict(mode=data.get('mode','search'),scale=int(data.get('scale',1)),
-                    source=int(data.get('source',0)),x=int(data.get('x',0)),y=int(data.get('y',0)),
-                    width=int(data.get('width',10)),height=int(data.get('height',10)),
+        mode=data.get('mode','search')
+        raw_references=data.get('references')
+        if raw_references is None and mode=='search':
+            raw_references=[dict(source=data.get('source',0),x=data.get('x',0),y=data.get('y',0),
+                                 reference_id='legacy-1')]
+        references=[]
+        for number,row in enumerate(raw_references or [],1):
+            if not isinstance(row,dict):raise ValueError('参考点格式无效')
+            references.append(dict(source=int(row.get('source',-1)),x=int(row.get('x',-1)),
+                                   y=int(row.get('y',-1)),
+                                   reference_id=str(row.get('reference_id',number))[:80],
+                                   reference_number=int(row.get('reference_number',number))))
+        config=dict(mode=mode,scale=int(data.get('scale',1)),
+                    source=references[0]['source'] if references else int(data.get('source',0)),
+                    x=references[0]['x'] if references else int(data.get('x',0)),
+                    y=references[0]['y'] if references else int(data.get('y',0)),
+                    width=int(data.get('width',14)),height=int(data.get('height',14)),
+                    references=references,
                     exclude_source=bool(data.get('exclude_source',True)),
                     candidate_threshold=float(data.get('candidate_threshold',.85)),
                     max_candidates=int(data.get('max_candidates',20)),
@@ -449,6 +493,12 @@ def start():
         if config['mode'] not in {'index','search'} or config['scale'] not in (1,2):raise ValueError('配置无效')
         if not 0<=config['source']<len(files):raise ValueError('源图片无效')
         if not 1<=config['width']<=512 or not 1<=config['height']<=512:raise ValueError('宽高需在 1–512 之间')
+        if config['mode']=='search':
+            if config['width']!=14 or config['height']!=14:raise ValueError('多参考检索固定使用 14×14 参考框')
+            if not 1<=len(references)<=5:raise ValueError('参考库需要 1–5 个已启用参考点')
+            if any(not 0<=row['source']<len(files) or row['x']<0 or row['y']<0 for row in references):
+                raise ValueError('参考点坐标或来源图片无效')
+            if any(not 1<=row['reference_number']<=5 for row in references):raise ValueError('参考点编号无效')
         if not -1<=config['candidate_threshold']<=1:raise ValueError('候选相似度需在 -1 到 1 之间')
         if not 1<=config['max_candidates']<=100:raise ValueError('每图候选上限需在 1–100 之间')
         if not 1<=config['nms_distance']<=512:raise ValueError('候选去重距离需在 1–512 像素之间')

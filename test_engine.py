@@ -34,6 +34,17 @@ class SpatialTests(unittest.TestCase):
         self.assertEqual({(x,y) for _,x,y in found},{(14,14),(56,56)})
         self.assertTrue(all(score>.99 for score,_,_ in found))
 
+    def test_multiple_reference_matches_take_best_reference(self):
+        f=np.zeros((6,6,4),dtype=np.float32)
+        f[...,3]=1
+        f[1,1]=[1,0,0,0]
+        f[4,4]=[0,1,0,0]
+        queries=torch.tensor([[1.,0.,0.,0.],[0.,1.,0.,0.]],device=app.DEVICE)
+        found=app.multiple_reference_matches(
+            f,84,84,14,14,1,queries,threshold=.99,max_candidates=5,nms_distance=14)
+        matches={(x,y):reference for _,x,y,reference in found}
+        self.assertEqual(matches,{(14,14):0,(56,56):1})
+
     def test_2x_coordinate_mapping(self):
         f=torch.eye(4).reshape(1,4,4)
         q=app.descriptors(f,[7],[0],7,7,7)[0,0]
@@ -63,6 +74,11 @@ class SpatialTests(unittest.TestCase):
                 app.ANNOTATIONS=folder/'annotations.sqlite3'
                 app.open_folder(folder)
                 client=app.app.test_client()
+                too_many=client.post('/api/start',json=dict(generation=app.dataset['generation'],
+                    mode='search',width=14,height=14,references=[dict(source=0,x=0,y=0)]*6),
+                    headers={'X-Scope-Token':app.TOKEN},base_url='http://127.0.0.1:8765')
+                self.assertEqual(too_many.status_code,400)
+                self.assertIn('1–5',too_many.get_json()['error'])
                 payload=dict(generation=app.dataset['generation'],id=0,x=4,y=5,width=14,height=14,
                              score=.9,review_label='positive')
                 response=client.post('/api/annotation',json=payload,headers={'X-Scope-Token':app.TOKEN},
